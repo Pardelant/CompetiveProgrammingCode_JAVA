@@ -2,39 +2,73 @@ package aceptaelreto23_24;
 
 /* @author pardelant
  */
-import java.util.Arrays;
-import java.util.Scanner;
-public class Reto429 {
-      
-    static boolean hayEspacio(int[] hangares, int[] naves, int numNaves, int numHangares) {
-        Arrays.sort(hangares);
+import java.io.IOException;
 
-        for (int i = 0; i < naves.length; i++) {
+public class OrganizandoLosHangares {
+    public static void main(String[] args) throws IOException {
+        StringBuilder output = new StringBuilder();
+        int h = readInt();
 
-            if (hangares[hangares.length - 1] < naves[i]) {
-                return false;
+        while (h != 0) {
+            int[] hangares = new int[h];
+
+            // Leer los tamanos de los hangares
+            for (int i = 0; i < h; i++) {
+                hangares[i] = readInt();
+            }
+
+            int n = readInt();
+            boolean posible = true;
+
+            // Leer las naves en orden de llegada
+            for (int i = 0; i < n; i++) {
+                int nave = readInt();
+                int mayor = -1;
+                int posicion = -1;
+
+                // Buscar el hangar con mas espacio disponible
+                for (int j = 0; j < h; j++) {
+                    if (hangares[j] > mayor) {
+                        mayor = hangares[j];
+                        posicion = j;
+                    }
+                }
+
+                // Comprobar si la nave cabe en el hangar elegido
+                if (mayor < nave) {
+                    posible = false;
+                } else if (posible) {
+                    hangares[posicion] -= nave;
+                }
+            }
+
+            // Guardar el resultado
+            if (posible) {
+                output.append("SI\n");
             } else {
-                hangares[hangares.length - 1] -= naves[i];
+                output.append("NO\n");
             }
 
+            h = readInt();
         }
-        return true;
+
+        System.out.print(output);
     }
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int[] hangares, naves;
-        int numHangares, numNaves;
-        while ((numHangares = in.nextInt()) != 0) {
-            hangares = new int[numHangares];
-            numNaves = in.nextInt();
-            naves = new int[numNaves];
-            for (int i = 0; i < numHangares; i++) {
-                hangares[i] = in.nextInt();
-            }
-            for (int i = 0; i < numNaves; i++) {
-                naves[i] = in.nextInt();
-            }
-            System.out.println(hayEspacio(hangares, naves, numNaves, numHangares) ? "SI" : "NO");
+
+    // Metodo para leer un entero
+    private static int readInt() throws IOException {
+        int res = 0;
+        int c;
+
+        do {
+            c = System.in.read();
+        } while (c <= 32 && c != -1);
+
+        while (c > 32) {
+            res = res * 10 + c - '0';
+            c = System.in.read();
         }
+
+        return res;
     }
 }
